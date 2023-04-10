@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:52 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/03/26 18:25:32 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/10 17:25:23 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,14 @@
 # define SUCCESS 0
 # define ERROR 1
 
-# define W_WIDTH 800
-# define W_HEIGHT 800
+# define W_WIDTH 640
+# define W_HEIGHT 640
 
-# define PIXEL_SIZE 32
+# define CELL_SIZE 64
+# define STEP_SIZE 4
+# define ROTATE_SIZE 0.04
+
+# define PI 3.14159265
 
 # ifdef __APPLE__
 #  define KEY_A 0
@@ -87,12 +91,21 @@ typedef struct s_mlx
 
 typedef struct s_square
 {
-	int		x;
-	int		y;
-	int		width;
-	int		height;
-	int		color;
+	double		x;
+	double		y;
+	int			width;
+	int			height;
+	int			color;
 }	t_square;
+
+typedef struct s_triangle
+{
+	double		x;
+	double		y;
+	int			width;
+	int			height;
+	int			color;
+}	t_triangle;
 
 /* 
 	@param bpp bits per pixel.
@@ -100,11 +113,13 @@ typedef struct s_square
  */
 typedef struct s_img
 {
-	void	*img_ptr;
-	char	*addr;
+	int		width;
+	int		height;
 	int		bpp;
-	int		size_line;
+	char	*addr;
 	int		endian;
+	void	*img_ptr;
+	int		size_line;
 }	t_img;
 
 typedef struct s_wall
@@ -113,21 +128,13 @@ typedef struct s_wall
 	int	y;
 }	t_wall;
 
-typedef struct s_direction
-{
-	double	angle;
-	double	delta_x;
-	double	delta_y;
-}	t_direction;
-
 typedef struct s_player
 {
 	double	x;
 	double	y;
-	// double	angle;
-	// double	delta_x;
-	// double	delta_y;
-	t_direction	direction;
+	double	angle;
+	double	delta_x;
+	double	delta_y;
 }	t_player;
 
 typedef struct s_game
@@ -136,4 +143,22 @@ typedef struct s_game
 	t_player	*player;
 }	t_game;
 
+/* ********** RENDER ********** */
+
+// int			render(t_game *game);
+// void		render_wall(t_img *buffer_img);
+// int			render_square(t_square *sq, t_img *buffer_img);
+// void		render_minimap_background(int color, t_img *buffer_img);
+// void		render_object_square(int x, int y, int color, t_img *buffer);
+// void		render_square_wall(t_wall *wall, int color, t_img *buffer_img);
+// void		render_player_square(t_player *player, int color, t_img *buffer_img);
+// void		render_player_direction(t_player *player, int color, t_img *buffer_img);
+
+int		render(t_game *game);
+void	render_square(int x, int y, int width, int height, int color, t_img *img);
+
+void		img_pixel_put(int x, int y, int color, t_img *img);
+t_square	*sq_init(double x, double y, int width, int height, int color);
+
+int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
 #endif
