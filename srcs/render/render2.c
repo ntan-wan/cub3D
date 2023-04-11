@@ -6,12 +6,11 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 22:01:20 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/10 18:02:21 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/11 12:12:04 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-int	sl_copy_starting_pixel(int num);
 
 int	map_width = 10;
 int	map_height = 10;
@@ -28,107 +27,16 @@ char *map[] = {
 	"1111111111",
 };
 
-void	img_pixel_put(int x, int y, int color, t_img *img)
-{
-	int		i;
-	char	*pixel;	
+// void	render_mini_player_next_move(t_player *player, int color, t_img *img)
+// {
+// 	int	x;
+// 	int	y;
 
-	i = img->bpp - 8;
-	pixel = img->addr + (y * img->size_line + x * (img->bpp / 8));
-	while (i >= 0)
-	{
-		if (img->endian != 0)
-			*pixel++ = (color >> i) & 0xFF;
-		else
-			*pixel++ = (color >> (img->bpp - 8 - i)) & 0xFF;
-		i -= 8;
-	}
-}
-
-void	render_square(int x, int y, int width, int height, int color, t_img *img)
-{
-	int	coord_x;
-	int	coord_y;
-
-	coord_x = x;
-	coord_y = y;
-	while (coord_y < y + height)
-	{
-		coord_x = x;
-		while (coord_x < x + width)
-		{
-			img_pixel_put(coord_x, coord_y, color, img);
-			coord_x++;
-		}
-		coord_y++;
-	}
-}
-
-void	render_minimap_background(int color, t_img *img)
-{
-	int	x;
-	int	y;
-
-	y = -1;
-	while (++y < W_HEIGHT)
-	{
-		x = -1;
-		while (++x < W_WIDTH)
-			img_pixel_put(x, y, color, img);
-	}
-}
-
-
-int	straight_line_step_get(int start_point, int end_point)
-{
-	if (start_point < end_point)
-		return (1);
-	else
-		return (-1);
-}
-
-void	render_straight_line(int x0, int y0, int x1, int y1, int color, t_img *img)
-{
-	int dx = abs(x1 - x0);
-    int dy = abs(y1 - y0);
-    int sx = (x0 < x1) ? 1 : -1;
-    int sy = (y0 < y1) ? 1 : -1;
-    int err = dx - dy;
-
-    while (x0 != x1 || y0 != y1)
-    {
-		//
-		// x0 = sl_copy_starting_pixel(x0);
-		// y0 = sl_copy_starting_pixel(y0);
-		//
-		if (x0 < 0 || y0 < 0 || x0 > W_WIDTH || y0 > W_HEIGHT)
-			break ;
-		//
-		img_pixel_put(x0, y0, color, img);
-        int e2 = 2 * err;
-        if (e2 > -dy)
-        {
-            err -= dy;
-            x0 += sx;
-        }
-        if (e2 < dx)
-        {
-            err += dx;
-            y0 += sy;
-        }
-    }
-}
-
-void	render_mini_player_next_move(t_player *player, int color, t_img *img)
-{
-	int	x;
-	int	y;
-
-	x = player->x + player->delta_x;
-	y = player->y + player->delta_y;
-	// render_straight_line(player->x, player->y, x, y, RED, img);
-	render_square(x, y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
-}
+// 	x = player->x + player->delta_x;
+// 	y = player->y + player->delta_y;
+// 	// render_line(player->x, player->y, x, y, RED, img);
+// 	render_quad(x, y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// }
 
 #define P2 PI/2
 #define P3 3*PI/2
@@ -139,6 +47,19 @@ void	render_mini_player_next_move(t_player *player, int color, t_img *img)
 double	dist(double ax, double ay, double bx, double by, double ang)
 {
 	return (sqrt((bx-ax) * (bx -ax) + (by-ay) * (by-ay))); 
+}
+
+int	*coord_init(int x, int y)
+{
+	int	*coord;
+
+	coord = malloc(2 * sizeof(int));
+	if (coord)
+	{
+		coord[0] = x;
+		coord[1] = y;
+	}
+	return (coord);
 }
 
 void	render_ray(t_player *player, t_img *buffer)
@@ -199,12 +120,7 @@ void	render_ray(t_player *player, t_img *buffer)
 				ry+=yo;
 				dof+=1;
 			}
-			// printf("mx %d\n", mx);
-			// printf("my %d\n", my);
-			// printf("rx %f\n", rx);
-			// printf("ry %f\n", ry);
 		}
-		// hx=rx; hy = ry; disH=dist(player->x, player->y, hx, hy, ra);
 //vertical;
 		dof = 0;
 		double disV=1000000, vx=player->x, vy= player->y;
@@ -235,13 +151,9 @@ void	render_ray(t_player *player, t_img *buffer)
 			my = (int)(ry) >> 6;
 			mp = my * mapX + mx;
 			
-			// printf("mx %d\n", mx);
-			// printf("my %d\n", my);
-			// if (mp < mapX * mapY && map[my][mx] == '1')
 			if ( mx >= 0 && my >= 0 && mx < mapX && my < mapY && map[my][mx] == '1')
 			{
 				vx=rx; vy = ry; disV=dist(player->x, player->y, vx, vy, ra);
-				// dof=8;
 				break ;
 			}
 			else
@@ -250,8 +162,6 @@ void	render_ray(t_player *player, t_img *buffer)
 				ry+=yo;
 				dof +=1;
 			}
-			// printf("rx %f\n", rx);
-			// printf("ry %f\n", ry);
 		}
 		
 		int	color;
@@ -261,17 +171,25 @@ void	render_ray(t_player *player, t_img *buffer)
 			rx=vx;
 			ry=vy;
 			disT = disV;
-			// color = encode_rgb(0.9, 0, 0);
-			color = encode_rgb(0, 250, 0);
+			color = pixel_encode_rgb(0, 250, 0);
 		}
 		else if (disH < disV)
 		{
 			rx=hx;
 			ry=hy;
 			disT = disH;
-			color = encode_rgb(0, 100, 0);
+			color = pixel_encode_rgb(0, 100, 0);
 		}
-		// render_straight_line(player->x, player->y, rx, ry, RED, buffer);
+		int	*start0;
+		int	*end0;
+
+		start0 = coord_init(player->x, player->y);
+		end0 = coord_init(rx, ry);
+		t_line	*line0 = line_init(start0, end0, RED);
+		render_line(line0, buffer);
+		free(start0);
+		free(end0);
+		free(line0);
 
 		// draw 3d wall
 		float ca = player->angle - ra; // rule of cosine , cosine angle
@@ -283,11 +201,22 @@ void	render_ray(t_player *player, t_img *buffer)
 		float lineH = (map_width * map_height * 640) / disT; // line height
 		if (lineH > 640)
 			lineH = 640;
-		// float line_offset = 640 - (lineH / 2);
 		float line_offset = (640 - lineH) / 2;
 		// printf("line_offset %f\n", line_offset);
-		render_straight_line(testx * 10, line_offset, testx * 10, line_offset + lineH, color, buffer);
-		// render_straight_line(testx * 10, line_offset, testx * 10, lineH  + line_offset, color, buffer);
+		int	*start;
+		int	*end;
+
+		start = coord_init(testx * 10, line_offset);
+		end = coord_init(testx * 10, line_offset + lineH);
+		t_line	*line = line_init(start, end, color);
+		// render_line3(testx * 10, line_offset, testx * 10, line_offset + lineH, color, buffer);
+		render_line(line, buffer);
+		free(line);
+		free(start);
+		free(end);
+		// render_line(testx, line_offset, testx, line_offset + lineH, color, buffer);
+		// render_thick_line(testx * 10, line_offset, line_offset + lineH, 10, color, buffer);
+		// render_line(testx * 10, line_offset, testx * 10, lineH  + line_offset, color, buffer);
 		testx++;
 		//
 		ra += DEG;
@@ -392,30 +321,13 @@ void	sl_copy_img(t_img *dst, t_img *src, int x, int y)
 }
 
 
-void	render_mini_player(t_player *p, int color, t_img *img)
-{
-	// render_square((W_WIDTH - CELL_SIZE) / 2, (W_HEIGHT - CELL_SIZE)  / 2, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
-	render_square(p->x, p->y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
-}
+// void	render_mini_player(t_player *p, int color, t_img *img)
+// {
+// 	// render_quad((W_WIDTH - CELL_SIZE) / 2, (W_HEIGHT - CELL_SIZE)  / 2, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// 	render_quad(p->x, p->y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// }
 
-void	render_minimap(t_img *img)
-{
-	int	x;
-	int	y;
-	
-	y = -1;
-	while (++y < map_height)
-	{
-		x = -1;
-		while (++x < map_width)
-		{
-			if (map[y][x] == '1')
-				render_square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 4, CELL_SIZE - 4, WHITE, img);
-			else
-				render_square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE - 4, CELL_SIZE - 4, BLACK, img);
-		}
-	}
-}
+
 
 // render
 int	render(t_game *game)
@@ -427,7 +339,7 @@ int	render(t_game *game)
 	img = img_init(mlx_new_image(game->mlx->mlx_ptr, W_WIDTH, W_HEIGHT));
 
 	//render things...
-	// render_minimap_background(GRAY, img);
+	// render_background(GRAY, img);
 	// render_minimap(img);
 	// render_mini_player(game->player, YELLOW, img);
 	// render_mini_player_next_move(game->player, TEAL, img);
