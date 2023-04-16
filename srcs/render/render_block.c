@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_quad.c                             :+:      :+:    :+:   */
+/*   render_block.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,42 +12,53 @@
 
 #include "cub3d.h"
 
-t_quad	*quad_init(int coord[2], int width, int height, int color)
+void	block_set_color(t_block *block, int color)
 {
-	t_quad	*quad;
-
-	quad = malloc(sizeof(t_quad));
-	if (quad)
-	{
-		quad->color = color;
-		quad->width = width;
-		quad->height = height;
-		ft_memcpy(quad->coord, coord, 2 * sizeof(int));
-	}
-	return (quad);
+	if (block)
+		block->color = color;
 }
 
-void	render_quad(t_quad *quad, t_img *dst_img)
+t_block	*block_init(int coord[2], int width, int height, int color)
+{
+	t_block	*block;
+
+	block = malloc(sizeof(t_block));
+	if (block)
+	{
+		block->color = color;
+		block->width = width;
+		block->height = height;
+		ft_memcpy(block->coord, coord, 2 * sizeof(int));
+	}
+	return (block);
+}
+
+void	render_block(t_block *block, t_img *dst_img)
 {
 	int	x;
 	int	y;
 
-	y = quad->coord[1];
-	while (y < y + quad->height)
+	y = block->coord[1];
+	while (y < block->coord[1] + block->height)
 	{
-		x = quad->coord[0];
-		while (x < x + quad->width)
+		x = block->coord[0];
+		while (x < block->coord[0] + block->width)
 		{
-			pixel_img_put(x, y, quad->color, dst_img);
+			pixel_img_put(x, y, block->color, dst_img);
 			x++;
 		}
 		y++;
 	}
 }
 
-void	quad_free(t_quad **quad)
+void	render_block_object(int x, int y, int color, t_img *dst_img)
 {
-	if (*quad)
-		free(*quad);
-	*quad = NULL;
+	render_block(&(t_block){color, CELL_SIZE, CELL_SIZE, {x, y}}, dst_img);
+}
+
+void	block_free(t_block **block)
+{
+	if (*block)
+		free(*block);
+	*block = NULL;
 }

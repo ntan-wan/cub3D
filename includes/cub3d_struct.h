@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 12:12:19 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/11 12:24:00 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/16 14:36:27 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_mlx
 
 typedef struct s_player
 {
+	char	orientation;
 	double	x;
 	double	y;
 	double	angle;
@@ -30,10 +31,19 @@ typedef struct s_player
 	double	delta_y;
 }	t_player;
 
+typedef struct s_map
+{
+	int			width;
+	int			height;
+	t_player	*player;
+	t_list		*list;
+}	t_map;
+
 typedef struct s_game
 {
 	t_mlx		*mlx;
-	t_player	*player;
+	t_map		*map;
+	// t_player	*player;
 }	t_game;
 
 /* ********** RENDER ********** */
@@ -72,13 +82,13 @@ typedef struct s_img
 	int		size_line;
 }	t_img;
 
-typedef struct s_quad
+typedef struct s_block
 {
 	int	color;
 	int	width;
 	int	height;
 	int	coord[2];
-}	t_quad;
+}	t_block;
 
 typedef struct s_line
 {

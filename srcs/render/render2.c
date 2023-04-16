@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 22:01:20 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/11 12:12:04 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/16 14:40:28 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char *map[] = {
 // 	x = player->x + player->delta_x;
 // 	y = player->y + player->delta_y;
 // 	// render_line(player->x, player->y, x, y, RED, img);
-// 	render_quad(x, y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// 	render_block(x, y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
 // }
 
 #define P2 PI/2
@@ -321,10 +321,11 @@ void	sl_copy_img(t_img *dst, t_img *src, int x, int y)
 }
 
 
-// void	render_mini_player(t_player *p, int color, t_img *img)
+// void	render_mini_player(t_player *p, int color, t_img *dst_img)
 // {
-// 	// render_quad((W_WIDTH - CELL_SIZE) / 2, (W_HEIGHT - CELL_SIZE)  / 2, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
-// 	render_quad(p->x, p->y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// 	// render_block((W_WIDTH - CELL_SIZE) / 2, (W_HEIGHT - CELL_SIZE)  / 2, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// 	// render_block(p->x, p->y, CELL_SIZE - 4, CELL_SIZE - 4, color, img);
+// 	// render_block_object(p->x, p->y, color, dst_img);
 // }
 
 
@@ -340,10 +341,31 @@ int	render(t_game *game)
 
 	//render things...
 	// render_background(GRAY, img);
-	// render_minimap(img);
+	// render_mini_map(img);
 	// render_mini_player(game->player, YELLOW, img);
 	// render_mini_player_next_move(game->player, TEAL, img);
-	render_ray(game->player, img);
+	// render_ray(game->map->player, img);
+	// render_mini_map(game->map, img);
+	render_mini_map(game->map, img);
+	// render_mini_player(game->player, YELLOW, img);
+	
+	// t_block	b;
+	// b.height = CELL_SIZE;
+	// b.width = CELL_SIZE;
+	// b.color = RED;
+	// b.coord[0] = 1 * CELL_SIZE;
+	// b.coord[1] = 1 * CELL_SIZE;
+	// render_block(&b, img);
+
+	// t_line line;
+	// line.color = RED;
+	// line.start[0] = 0;
+	// line.start[1] = 0;
+	// line.end[0] = 5 * CELL_SIZE;
+	// line.end[1] = 5 * CELL_SIZE;
+	// line.delta_x = abs(line.end[0] - line.start[0]);
+	// line.delta_y = abs(line.end[1] - line.start[1]);
+	// render_line(&line, img);
 
 	//put image to window...
 	mlx_put_image_to_window(game->mlx->mlx_ptr, game->mlx->win_ptr, img->img_ptr, 0, 0);
