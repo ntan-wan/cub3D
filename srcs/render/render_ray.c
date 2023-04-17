@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 14:45:37 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/18 07:09:33 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:17:54 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,8 @@ void	handle_ray_horizontal_up(t_ray	*ray, t_player *p)
 	double	arc_tan;
 
 	arc_tan = -1/tan(ray->angle);
-	ray->end[1] = (((int)p->y >>6) << 6) - 0.0001;
-	ray->end[0] = (p->y - ray->end[1]) * arc_tan + p->x;
+	ray->end[1] = (((int)p->coord[1] >>6) << 6) - 0.0001;
+	ray->end[0] = (p->coord[1] - ray->end[1]) * arc_tan + p->coord[0];
 	ray->y_offset = -64;
 	ray->x_offset = -ray->y_offset * arc_tan;
 }
@@ -107,16 +107,16 @@ void	handle_ray_horizontal_down(t_ray *ray, t_player *p)
 	double	arc_tan;
 
 	arc_tan = -1/tan(ray->angle);
-	ray->end[1] = (((int)p->y >> 6) << 6) + 64;
-	ray->end[0] = (p->y - ray->end[1]) * arc_tan + p->x;
+	ray->end[1] = (((int)p->coord[1] >> 6) << 6) + 64;
+	ray->end[0] = (p->coord[1] - ray->end[1]) * arc_tan + p->coord[0];
 	ray->y_offset = 64;
 	ray->x_offset = -ray->y_offset * arc_tan;
 }
 
 void	handle_ray_parallel(t_ray *ray, t_player *p)
 {
-	ray->end[0] = p->x;
-	ray->end[1] = p->y;
+	ray->end[0] = p->coord[0];
+	ray->end[1] = p->coord[1];
 }
 
 double	get_ray_len(t_ray *ray, t_map *map)
@@ -132,7 +132,7 @@ double	get_ray_len(t_ray *ray, t_map *map)
 			break ;
 		else if (wall_detected(ray, map))
 		{
-			length = dist(map->player->x, map->player->y, ray->end[0], ray->end[1], ray->angle);
+			length = dist(map->player->coord[0], map->player->coord[1], ray->end[0], ray->end[1], ray->angle);
 			// lengh = dist2();
 			break ;
 		}
@@ -151,8 +151,8 @@ void	handle_ray_vertical_left(t_ray *ray, t_player *p)
 	double	n_tan;
 
 	n_tan = -tan(ray->angle);
-	ray->end[0] = (((int)p->x >> 6) << 6) - 0.0001;
-	ray->end[1] = (p->x - ray->end[0]) * n_tan + p->y;
+	ray->end[0] = (((int)p->coord[0] >> 6) << 6) - 0.0001;
+	ray->end[1] = (p->coord[0] - ray->end[0]) * n_tan + p->coord[1];
 	ray->x_offset = -64;
 	ray->y_offset = -ray->x_offset * n_tan;
 }
@@ -162,8 +162,8 @@ void	handle_ray_vertical_right(t_ray *ray, t_player *p)
 	double	n_tan;
 
 	n_tan = -tan(ray->angle);
-	ray->end[0] = (((int)p->x >> 6) << 6) + 64;
-	ray->end[1] = (p->x - ray->end[0]) * n_tan + p->y;
+	ray->end[0] = (((int)p->coord[0] >> 6) << 6) + 64;
+	ray->end[1] = (p->coord[0] - ray->end[0]) * n_tan + p->coord[1];
 	ray->x_offset = 64;
 	ray->y_offset = -ray->x_offset * n_tan;
 }
@@ -199,7 +199,7 @@ t_ray	*ray_horizontal_init(double ray_angle, int color, t_map *map)
 	ray = malloc(sizeof(t_ray));
 	ray->color = color;
 	ray->angle = ray_angle;
-	ft_memcpy(ray->start, (double [2]){p->x, p->y}, sizeof(ray->start));
+	ft_memcpy(ray->start, (double [2]){p->coord[0], p->coord[1]}, sizeof(ray->start));
 	if (ray_angle > PI)
 		handle_ray_horizontal_up(ray, p);
 	else if (ray_angle < PI)
@@ -219,7 +219,7 @@ t_ray	*ray_vertical_init(double ray_angle, int color, t_map *map)
 	ray = malloc(sizeof(t_ray));
 	ray->color = color;
 	ray->angle = ray_angle;
-	ft_memcpy(ray->start, (double [2]){p->x, p->y}, sizeof(ray->start));
+	ft_memcpy(ray->start, (double [2]){p->coord[0], p->coord[1]}, sizeof(ray->start));
 	if (ray_angle > P2 && ray_angle < P3)
 		handle_ray_vertical_left(ray, p);
 	else if (ray_angle < P2 || ray_angle > P3)
@@ -290,169 +290,169 @@ void	render_rays(t_map *map, t_img *buffer)
 	
 // }
 
-void	render_rayzzz(t_player *player, t_img *buffer)
-{
-	int r, mx, my, mp, dof, disT;
-	double rx, ry, ra, xo, yo;
-	//
-	ra = player->angle - DEG * 30;
-	// ra = player->angle;
-		int testx = 0;
-		int	testy = 0;
-	if (ra < 0)
-		ra += 2 * PI;
-	if (ra > 2 * PI)
-		ra -= 2 * PI;
-	for (r = 0; r < 64; r++)
-	{
-		// horizontal
-		dof = 0;
-		double aTan = -1/tan(ra);
-		double disH = 1000000, hx=player->x, hy = player->y;
-		if (ra > PI)
-		{
-			ry = (((int)player->y >>6) << 6) - 0.0001;
-			rx = (player->y - ry) * aTan + player->x;
-			yo = -64;
-			xo = -yo * aTan;
-		}
-		if (ra < PI)
-		{
-			ry = (((int)player->y >>6) << 6) +64;
-			rx = (player->y - ry) * aTan+ player->x;
-			yo = 64;
-			xo = -yo * aTan;
-		}
-		if (ra == 0 || ra == PI)
-		{
-			rx = player->x;
-			ry = player->y;
-			dof = 8;
-		}
-		while (dof < 8)
-		{
-			// if (ra == 0 || ra == PI)
-				// break ;
-			mx = (int)(rx) >> 6;
-			my = (int)(ry) >> 6;
-			mp = my * map_width+mx;
-			// if (mx >= 0 && mx <= 9 && my >= 0 && my <= 9 && map[my][mx] == '1')
-			// if (mp < mapX * mapY && map[my][mx] == '1')
-			if ( mx >= 0 && my >= 0 && mx < map_width && my < map_height && map[my][mx] == '1')
-			{
-				hx=rx; hy = ry; disH=dist(player->x, player->y, hx, hy, ra);
-				// dof=8;
-				break ;
-			}
-			else
-			{
-				rx+=xo;
-				ry+=yo;
-				dof+=1;
-			}
-		}
-//vertical;
-		dof = 0;
-		double disV=1000000, vx=player->x, vy= player->y;
-		double nTan = -tan(ra);
-		if (ra > P2 && ra < P3)
-		{
-			rx = (((int)player->x >>6) << 6) -0.0001;
-			ry = (player->x - rx) * nTan + player->y;
-			xo = -64;
-			yo = -xo * nTan;
-		}
-		if (ra < P2 || ra > P3)
-		{
-			rx = (((int)player->x >>6) << 6)+64;
-			ry = (player->x - rx) * nTan+ player->y;
-			xo = 64;
-			yo = -xo * nTan;
-		}
-		if (ra == 0 || ra == PI)
-		{
-			rx = player->x;
-			ry = player->y;
-			dof = 8;
-		}
-		while (dof < 8)
-		{
-			mx = (int)(rx) >> 6;
-			my = (int)(ry) >> 6;
-			mp = my * map_width + mx;
+// void	render_rayzzz(t_player *player, t_img *buffer)
+// {
+// 	int r, mx, my, mp, dof, disT;
+// 	double rx, ry, ra, xo, yo;
+// 	//
+// 	ra = player->angle - DEG * 30;
+// 	// ra = player->angle;
+// 		int testx = 0;
+// 		int	testy = 0;
+// 	if (ra < 0)
+// 		ra += 2 * PI;
+// 	if (ra > 2 * PI)
+// 		ra -= 2 * PI;
+// 	for (r = 0; r < 64; r++)
+// 	{
+// 		// horizontal
+// 		dof = 0;
+// 		double aTan = -1/tan(ra);
+// 		double disH = 1000000, hx=player->x, hy = player->y;
+// 		if (ra > PI)
+// 		{
+// 			ry = (((int)player->y >>6) << 6) - 0.0001;
+// 			rx = (player->y - ry) * aTan + player->x;
+// 			yo = -64;
+// 			xo = -yo * aTan;
+// 		}
+// 		if (ra < PI)
+// 		{
+// 			ry = (((int)player->y >>6) << 6) +64;
+// 			rx = (player->y - ry) * aTan+ player->x;
+// 			yo = 64;
+// 			xo = -yo * aTan;
+// 		}
+// 		if (ra == 0 || ra == PI)
+// 		{
+// 			rx = player->x;
+// 			ry = player->y;
+// 			dof = 8;
+// 		}
+// 		while (dof < 8)
+// 		{
+// 			// if (ra == 0 || ra == PI)
+// 				// break ;
+// 			mx = (int)(rx) >> 6;
+// 			my = (int)(ry) >> 6;
+// 			mp = my * map_width+mx;
+// 			// if (mx >= 0 && mx <= 9 && my >= 0 && my <= 9 && map[my][mx] == '1')
+// 			// if (mp < mapX * mapY && map[my][mx] == '1')
+// 			if ( mx >= 0 && my >= 0 && mx < map_width && my < map_height && map[my][mx] == '1')
+// 			{
+// 				hx=rx; hy = ry; disH=dist(player->x, player->y, hx, hy, ra);
+// 				// dof=8;
+// 				break ;
+// 			}
+// 			else
+// 			{
+// 				rx+=xo;
+// 				ry+=yo;
+// 				dof+=1;
+// 			}
+// 		}
+// //vertical;
+// 		dof = 0;
+// 		double disV=1000000, vx=player->x, vy= player->y;
+// 		double nTan = -tan(ra);
+// 		if (ra > P2 && ra < P3)
+// 		{
+// 			rx = (((int)player->x >>6) << 6) -0.0001;
+// 			ry = (player->x - rx) * nTan + player->y;
+// 			xo = -64;
+// 			yo = -xo * nTan;
+// 		}
+// 		if (ra < P2 || ra > P3)
+// 		{
+// 			rx = (((int)player->x >>6) << 6)+64;
+// 			ry = (player->x - rx) * nTan+ player->y;
+// 			xo = 64;
+// 			yo = -xo * nTan;
+// 		}
+// 		if (ra == 0 || ra == PI)
+// 		{
+// 			rx = player->x;
+// 			ry = player->y;
+// 			dof = 8;
+// 		}
+// 		while (dof < 8)
+// 		{
+// 			mx = (int)(rx) >> 6;
+// 			my = (int)(ry) >> 6;
+// 			mp = my * map_width + mx;
 			
-			if ( mx >= 0 && my >= 0 && mx < map_width && my < map_height && map[my][mx] == '1')
-			{
-				vx=rx; vy = ry; disV=dist(player->x, player->y, vx, vy, ra);
-				break ;
-			}
-			else
-			{
-				rx+=xo;
-				ry+=yo;
-				dof +=1;
-			}
-		}
+// 			if ( mx >= 0 && my >= 0 && mx < map_width && my < map_height && map[my][mx] == '1')
+// 			{
+// 				vx=rx; vy = ry; disV=dist(player->x, player->y, vx, vy, ra);
+// 				break ;
+// 			}
+// 			else
+// 			{
+// 				rx+=xo;
+// 				ry+=yo;
+// 				dof +=1;
+// 			}
+// 		}
 		
-		int	color;
+// 		int	color;
 
-		if (disV < disH)
-		{
-			rx=vx;
-			ry=vy;
-			disT = disV;
-			color = pixel_encode_rgb(0, 250, 0);
-		}
-		else if (disH < disV)
-		{
-			rx=hx;
-			ry=hy;
-			disT = disH;
-			color = pixel_encode_rgb(0, 100, 0);
-		}
-		int	*start0;
-		int	*end0;
+// 		if (disV < disH)
+// 		{
+// 			rx=vx;
+// 			ry=vy;
+// 			disT = disV;
+// 			color = pixel_encode_rgb(0, 250, 0);
+// 		}
+// 		else if (disH < disV)
+// 		{
+// 			rx=hx;
+// 			ry=hy;
+// 			disT = disH;
+// 			color = pixel_encode_rgb(0, 100, 0);
+// 		}
+// 		int	*start0;
+// 		int	*end0;
 
-		start0 = coord_init(player->x, player->y);
-		end0 = coord_init(rx, ry);
-		t_line	*line0 = line_init(start0, end0, RED);
-		render_line(line0, buffer);
-		free(start0);
-		free(end0);
-		free(line0);
+// 		start0 = coord_init(player->x, player->y);
+// 		end0 = coord_init(rx, ry);
+// 		t_line	*line0 = line_init(start0, end0, RED);
+// 		render_line(line0, buffer);
+// 		free(start0);
+// 		free(end0);
+// 		free(line0);
 
-		// draw 3d wall
-		float ca = player->angle - ra; // rule of cosine , cosine angle
-		if (ca < 0)
-			ca += 2 * PI;
-		if (ca > 2 * PI)
-			ca -= 2 * PI;
-		disT = disT * cos(ca); // fix fisheye
-		float lineH = (map_width * map_height * 640) / disT; // line height
-		if (lineH > 640)
-			lineH = 640;
-		float line_offset = (640 - lineH) / 2;
-		// printf("line_offset %f\n", line_offset);
-		int	*start;
-		int	*end;
+// 		// draw 3d wall
+// 		float ca = player->angle - ra; // rule of cosine , cosine angle
+// 		if (ca < 0)
+// 			ca += 2 * PI;
+// 		if (ca > 2 * PI)
+// 			ca -= 2 * PI;
+// 		disT = disT * cos(ca); // fix fisheye
+// 		float lineH = (map_width * map_height * 640) / disT; // line height
+// 		if (lineH > 640)
+// 			lineH = 640;
+// 		float line_offset = (640 - lineH) / 2;
+// 		// printf("line_offset %f\n", line_offset);
+// 		int	*start;
+// 		int	*end;
 
-		start = coord_init(testx * 10, line_offset);
-		end = coord_init(testx * 10, line_offset + lineH);
-		t_line	*line = line_init(start, end, color);
-		// render_line3(testx * 10, line_offset, testx * 10, line_offset + lineH, color, buffer);
-		render_line(line, buffer);
-		free(line);
-		free(start);
-		free(end);
-		// render_line(testx, line_offset, testx, line_offset + lineH, color, buffer);
-		// render_thick_line(testx * 10, line_offset, line_offset + lineH, 10, color, buffer);
-		// render_line(testx * 10, line_offset, testx * 10, lineH  + line_offset, color, buffer);
-		testx++;
-		//
-		ra += DEG;
-		if (ra < 0)
-			ra += 2 * PI;
-		if (ra > 2 * PI)
-			ra -= 2 * PI;
-	}
-}
+// 		start = coord_init(testx * 10, line_offset);
+// 		end = coord_init(testx * 10, line_offset + lineH);
+// 		t_line	*line = line_init(start, end, color);
+// 		// render_line3(testx * 10, line_offset, testx * 10, line_offset + lineH, color, buffer);
+// 		render_line(line, buffer);
+// 		free(line);
+// 		free(start);
+// 		free(end);
+// 		// render_line(testx, line_offset, testx, line_offset + lineH, color, buffer);
+// 		// render_thick_line(testx * 10, line_offset, line_offset + lineH, 10, color, buffer);
+// 		// render_line(testx * 10, line_offset, testx * 10, lineH  + line_offset, color, buffer);
+// 		testx++;
+// 		//
+// 		ra += DEG;
+// 		if (ra < 0)
+// 			ra += 2 * PI;
+// 		if (ra > 2 * PI)
+// 			ra -= 2 * PI;
+// 	}
+// }

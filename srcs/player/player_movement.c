@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 23:43:47 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/17 13:09:30 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:13:57 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,16 @@ void	player_rotate_right(t_player *player)
 
 void	player_move_forward(t_player *player)
 {
-	player->x += player->delta_x;
-	player->y += player->delta_y;
+	// player->x += player->delta_x;
+	// player->y += player->delta_y;
+	player->coord[0] += player->delta_x;
+	player->coord[1] += player->delta_y;
 }
 
 void	player_move_backward(t_player *player)
 {
-	player->x -= player->delta_x;
-	player->y -= player->delta_y;
+	// player->x -= player->delta_x;
+	// player->y -= player->delta_y;
+	player->coord[0] -= player->delta_x;
+	player->coord[1] -= player->delta_y;
 }

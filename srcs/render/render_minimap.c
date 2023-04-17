@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 11:57:41 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/16 14:40:28 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:18:23 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	render_mini_walls(t_map *map, int color, t_img *dst_img)
 
 void	render_mini_player(t_player *p, int color, t_img *dst_img)
 {
-	render_block_object(p->x, p->y, color, dst_img);
+	render_block_object(p->coord[0], p->coord[1], color, dst_img);
 }
 
 void	render_mini_map(t_map *map, t_img *dst_img)

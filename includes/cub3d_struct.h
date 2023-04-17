@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 12:12:19 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/18 07:11:12 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:11:44 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ typedef struct s_mlx
 typedef struct s_player
 {
 	char	orientation;
-	double	x;
-	double	y;
-	// double	coord[2];
+	// double	x;
+	// double	y;
+	double	coord[2];
 	double	angle;
 	double	delta_x;
 	double	delta_y;

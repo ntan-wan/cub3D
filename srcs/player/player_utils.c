@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 23:05:56 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/16 13:58:53 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:21:10 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ t_player	*player_init(int x, int y, char orientation)
 	p = ft_calloc(1, sizeof(t_player));
 	if (p)
 	{
-		p->x = x;
-		p->y = y;
+		ft_memcpy(p->coord, (double [2]){x, y}, sizeof(p->coord));
 		p->orientation = orientation;
 		p->angle = player_angle_init(orientation);
 		p->delta_x = cos(p->angle) * STEP_SIZE;
