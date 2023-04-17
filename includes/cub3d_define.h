@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 12:25:01 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/11 12:34:06 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/16 15:00:13 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # define W_HEIGHT 640
 
 /* ********** SIZE ********** */
+
 # define CELL_SIZE 64
 # define STEP_SIZE 4
 # define ROTATE_SIZE 0.04
@@ -31,6 +32,9 @@
 /* ********** MATH ********** */
 
 # define PI 3.14159265
+# define P2 PI/2
+# define P3 3*PI/2
+# define DEG 0.0174533
 
 /* ********** KEYCODE ********** */
 

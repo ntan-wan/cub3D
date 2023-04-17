@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:52 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/16 14:40:28 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/17 11:40:14 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <math.h>
 # include <stdio.h>
+# include <float.h>
 # include <unistd.h>
 # include <stdint.h>
 # include <stdlib.h>
@@ -57,6 +58,10 @@ t_list	    *map_list_init(char *file_name);
 void		line_free(t_line **line);
 void		render_line(t_line *line, t_img *dst_img);
 t_line		*line_init(int start[2], int end[2], int color);
+// t_line		*line_init(double start[2], double end[2], int color);
+
+//ray
+void		render_ray(t_player *player, t_img *buffer);
 
 //block
 void		block_free(t_block **block);
@@ -64,13 +69,14 @@ void	    block_set_color(t_block *block, int color);
 void		render_block(t_block *block, t_img *dst_img);
 t_block		*block_init(int coord[2], int width, int height, int color);
 void		render_block_object(int x, int y, int color, t_img *dst_img);
-// void		render_block_object(int coord[2], int color, t_img *dst_img);
 
 // map
 void 		render_mini_map(t_map *map, t_img *dst_img);
 void	    render_mini_walls(t_map *map, int color, t_img *dst_img);
 void	    render_mini_player(t_player *p, int color, t_img *dst_img);
 
+
+void	render_rays(t_map *map, t_img *dst_img);
 
 void		render_background(int color, t_img *img);
 

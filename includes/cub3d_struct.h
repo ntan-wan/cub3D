@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 12:12:19 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/16 14:36:27 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:32:20 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,17 @@ typedef struct s_line
 	int	start[2];
 	int	end[2];
 }	t_line;
+
+typedef struct s_ray
+{
+	int		color;
+	double	start[2];
+	double	end[2];
+	double	angle;
+	double	x_offset;
+	double	y_offset;
+	double	length;
+}	t_ray;
 
 /* *********** EVENTS ********** */
 
