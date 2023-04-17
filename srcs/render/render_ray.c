@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_rayzzz.c                                       :+:      :+:    :+:   */
+/*   render_ray.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 14:45:37 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/18 06:19:41 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:09:33 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,18 @@ double	dist(double ax, double ay, double bx, double by, double ang)
 	return (sqrt((bx-ax) * (bx -ax) + (by-ay) * (by-ay))); 
 }
 
+double	dist2(double start[2], double end[2], double angle)
+{
+	double	x_square;
+	double	y_square;
+
+	x_square = pow(end[0] - start[0], 2);
+	y_square = pow(end[1] - start[1], 2);
+
+	return (sqrt(x_square + y_square));
+	// return (sqrt((bx-ax) * (bx -ax) + (by-ay) * (by-ay))); 
+}
+
 #define RAY_COUNT 64
 
 // Depth_Of_Field
@@ -45,15 +57,19 @@ bool	is_out_of_bounds_map(int mx, int my, t_map *map)
 	return (mx < 0 || mx >= map->width || my < 0 || my >= map->height);
 }
 
-bool	wall_contact_detected(int mx, int my, t_map *map)
+bool	wall_detected(t_ray *ray, t_map *map)
 {
+	int		mx;
+	int		my;
 	int		y;
 	t_list	*map_list;
 
-	map_list = map->list;
 	y = -1;
-	// if (is_out_of_bounds_map(mx, my, map))
-		// return (false);
+	mx = (int)(ray->end[0]) >> 6;
+	my = (int)(ray->end[1]) >> 6;
+	map_list = map->list;
+	if (is_out_of_bounds_map(mx, my, map))
+		return (false);
 	while (map_list)
 	{
 		++y;
@@ -61,7 +77,6 @@ bool	wall_contact_detected(int mx, int my, t_map *map)
 			return (((char *)map_list->content)[mx] == '1');
 		map_list = map_list->next;
 	}
-	// return (false);
 }
 
 double	ray_angle_adjust(double ray_angle)
@@ -71,15 +86,10 @@ double	ray_angle_adjust(double ray_angle)
 	angle = ray_angle;
 	if (ray_angle < 0)
 		angle += 2 * PI;
-	if (angle > 2 * PI)
+	else if (angle > 2 * PI)
 		angle -= 2 * PI;
 	return (angle);
 }
-
-/* 
-	ray_v = ray_vertical.
-	ray_h = ray_horizontal.
- */
 
 void	handle_ray_horizontal_up(t_ray	*ray, t_player *p)
 {
@@ -111,22 +121,19 @@ void	handle_ray_parallel(t_ray *ray, t_player *p)
 
 double	get_ray_len(t_ray *ray, t_map *map)
 {
-	int		mx;
-	int		my;
-	int		depth_of_field;
 	double	length;
+	int		depth_of_field;
 
-	depth_of_field = 0;
 	length = DBL_MAX;
+	depth_of_field = 0;
 	while (depth_of_field < DOF)
 	{
 		if (ray->angle == 0 || ray->angle == PI)
 			break ;
-		mx = (int)(ray->end[0]) >> 6;
-		my = (int)(ray->end[1]) >> 6;
-		if ( mx >= 0 && my >= 0 && mx < map->width && my < map->height && wall_contact_detected(mx, my, map))
+		else if (wall_detected(ray, map))
 		{
 			length = dist(map->player->x, map->player->y, ray->end[0], ray->end[1], ray->angle);
+			// lengh = dist2();
 			break ;
 		}
 		else
@@ -138,7 +145,6 @@ double	get_ray_len(t_ray *ray, t_map *map)
 	}
 	return (length);
 }
-
 
 void	handle_ray_vertical_left(t_ray *ray, t_player *p)
 {
@@ -211,8 +217,8 @@ t_ray	*ray_vertical_init(double ray_angle, int color, t_map *map)
 	
 	p = map->player;
 	ray = malloc(sizeof(t_ray));
-	ray->angle = ray_angle;
 	ray->color = color;
+	ray->angle = ray_angle;
 	ft_memcpy(ray->start, (double [2]){p->x, p->y}, sizeof(ray->start));
 	if (ray_angle > P2 && ray_angle < P3)
 		handle_ray_vertical_left(ray, p);

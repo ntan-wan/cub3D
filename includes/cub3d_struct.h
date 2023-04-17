@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 12:12:19 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/18 05:58:41 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 07:11:12 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct s_player
 	char	orientation;
 	double	x;
 	double	y;
+	// double	coord[2];
 	double	angle;
 	double	delta_x;
 	double	delta_y;
@@ -43,7 +44,6 @@ typedef struct s_game
 {
 	t_mlx		*mlx;
 	t_map		*map;
-	// t_player	*player;
 }	t_game;
 
 /* ********** RENDER ********** */
