@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 14:45:37 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/17 16:39:41 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:43:32 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,9 @@ void	render_rays(t_map *map, t_img *buffer)
 	int r, mx, my, mp, dof, disT;
 	double rx, ry, ra, xo, yo;
 	//
+	t_player *player;
+
+	player = map->player;
 	ra = player->angle - DEG * 30;
 	// ra = player->angle;
 		int testx = 0;
@@ -285,7 +288,7 @@ void	render_rays(t_map *map, t_img *buffer)
 			mp = my * map_width+mx;
 			// if (mx >= 0 && mx <= 9 && my >= 0 && my <= 9 && map[my][mx] == '1')
 			// if (mp < mapX * mapY && map[my][mx] == '1')
-			if ( mx >= 0 && my >= 0 && mx < map_width && my < map_height && map[my][mx] == '1')
+			if ( mx >= 0 && my >= 0 && mx < map->width && my < map->height && wall_contact_detected(mx, my, map))
 			{
 				hx=rx; hy = ry; disH=dist(player->x, player->y, hx, hy, ra);
 				// dof=8;
@@ -328,7 +331,7 @@ void	render_rays(t_map *map, t_img *buffer)
 			my = (int)(ry) >> 6;
 			mp = my * map_width + mx;
 			
-			if ( mx >= 0 && my >= 0 && mx < map_width && my < map_height && map[my][mx] == '1')
+			if ( mx >= 0 && my >= 0 && mx < map->width && my < map->height && wall_contact_detected(mx, my, map))
 			{
 				vx=rx; vy = ry; disV=dist(player->x, player->y, vx, vy, ra);
 				break ;
