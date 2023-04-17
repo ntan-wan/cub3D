@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 22:01:20 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/17 16:11:04 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 06:21:02 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ int	render(t_game *game)
 	// render_mini_map(img);
 	// render_mini_player(game->player, YELLOW, img);
 	// render_mini_player_next_move(game->player, TEAL, img);
-	// render_ray(game->map->player, img);
+	// render_rayzzz(game->map->player, img);
 
 	render_rays(game->map, img);
 	render_mini_map(game->map, img);

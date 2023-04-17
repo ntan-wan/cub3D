@@ -6,7 +6,7 @@
 /*   By: ntan-wan <ntan-wan@42kl.edu.my>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:42:52 by ntan-wan          #+#    #+#             */
-/*   Updated: 2023/04/17 11:40:14 by ntan-wan         ###   ########.fr       */
+/*   Updated: 2023/04/18 06:21:02 by ntan-wan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_line		*line_init(int start[2], int end[2], int color);
 // t_line		*line_init(double start[2], double end[2], int color);
 
 //ray
-void		render_ray(t_player *player, t_img *buffer);
+void		render_rayzzz(t_player *player, t_img *buffer);
 
 //block
 void		block_free(t_block **block);
